@@ -5,6 +5,10 @@ function generatecountdown(list,div)
 		var datearray=list[i][1].match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})(?:\s([+-]\d\.\d))?$/);
 		if(!datearray)throw new Error("timeformat error, must be [yyyy-mm-dd hh:mm] or [yyyy-mm-dd hh:mm +-d.d]");
 		if(list[i][2]=="et")list[i][1]=timef_et(parseInt(datearray[1],10),parseInt(datearray[2],10),parseInt(datearray[3],10),parseInt(datearray[4],10),parseInt(datearray[5],10),datearray[6]);
+		else if(list[i][2]=="az")list[i][1]=timef_az(parseInt(datearray[1],10),parseInt(datearray[2],10),parseInt(datearray[3],10),parseInt(datearray[4],10),parseInt(datearray[5],10),datearray[6]);
+		else if(list[i][2]=="mt")list[i][1]=timef_mt(parseInt(datearray[1],10),parseInt(datearray[2],10),parseInt(datearray[3],10),parseInt(datearray[4],10),parseInt(datearray[5],10),datearray[6]);
+		else if(list[i][2]=="ct")list[i][1]=timef_ct(parseInt(datearray[1],10),parseInt(datearray[2],10),parseInt(datearray[3],10),parseInt(datearray[4],10),parseInt(datearray[5],10),datearray[6]);
+		else if(list[i][2]=="pt")list[i][1]=timef_pt(parseInt(datearray[1],10),parseInt(datearray[2],10),parseInt(datearray[3],10),parseInt(datearray[4],10),parseInt(datearray[5],10),datearray[6]);
 		else if(list[i][2]=="utc")list[i][1]=timef_utc(parseInt(datearray[1],10),parseInt(datearray[2],10),parseInt(datearray[3],10),parseInt(datearray[4],10),parseInt(datearray[5],10),datearray[6]);
 		else throw new Error("timezone must be 'utc' or 'et'");
 	}
@@ -52,6 +56,76 @@ function timef_et(year,month,date,hour,minute)
 	if(d >= startDST && d < endDST)return utc-3600000; //dst
 	else return utc;
 }
+
+function timef_az(year,month,date,hour,minute)
+{
+	month--;
+	var utc = Date.UTC(year,month,date,hour+7,minute,0,0);
+	return utc;
+}
+
+function timef_mt(year,month,date,hour,minute)
+{
+	month--;
+	var utc = Date.UTC(year,month,date,hour+7,minute,0,0);
+	var d = new Date(utc);
+
+	var startDST = new Date(Date.UTC(year,2,1,2+5,0,0,0));
+	var dayDST = startDST.getUTCDay();
+	if(dayDST != 0){startDST.setUTCDate(15-dayDST)}
+	else{startDST.setUTCDate(8)}
+
+	var endDST = new Date(Date.UTC(year,10,1,2+4,0,0,0));
+	var dayDST = endDST.getUTCDay();
+	if(dayDST != 0){endDST.setUTCDate(8-dayDST)}
+	else{endDST.setUTCDate(1)}
+
+	if(d >= startDST && d < endDST)return utc-3600000; //dst
+	else return utc;
+}
+
+function timef_pt(year,month,date,hour,minute)
+{
+	month--;
+	var utc = Date.UTC(year,month,date,hour+8,minute,0,0);
+	var d = new Date(utc);
+
+	var startDST = new Date(Date.UTC(year,2,1,2+5,0,0,0));
+	var dayDST = startDST.getUTCDay();
+	if(dayDST != 0){startDST.setUTCDate(15-dayDST)}
+	else{startDST.setUTCDate(8)}
+
+	var endDST = new Date(Date.UTC(year,10,1,2+4,0,0,0));
+	var dayDST = endDST.getUTCDay();
+	if(dayDST != 0){endDST.setUTCDate(8-dayDST)}
+	else{endDST.setUTCDate(1)}
+
+	if(d >= startDST && d < endDST)return utc-3600000; //dst
+	else return utc;
+}
+
+function timef_ct(year,month,date,hour,minute)
+{
+	month--;
+	var utc = Date.UTC(year,month,date,hour+6,minute,0,0);
+	var d = new Date(utc);
+
+	var startDST = new Date(Date.UTC(year,2,1,2+5,0,0,0));
+	var dayDST = startDST.getUTCDay();
+	if(dayDST != 0){startDST.setUTCDate(15-dayDST)}
+	else{startDST.setUTCDate(8)}
+
+	var endDST = new Date(Date.UTC(year,10,1,2+4,0,0,0));
+	var dayDST = endDST.getUTCDay();
+	if(dayDST != 0){endDST.setUTCDate(8-dayDST)}
+	else{endDST.setUTCDate(1)}
+
+	if(d >= startDST && d < endDST)return utc-3600000; //dst
+	else return utc;
+}
+
+
+
 
 function timef_utc(year,month,date,hour,minute,offset)
 {
